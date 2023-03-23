@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "node scripts/build.js",
+    "dev":"node scripts/dev.js"
+  },
+  "name": "vue",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/xianren68/implement_vue3.git",
+  "author": "xianren <2958197921@qq.com>",
+  "license": "MIT",
+  "type": "module",
+  "devDependencies": {
+    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "execa": "^7.1.1",
+    "rollup": "^3.20.0",
+    "rollup-plugin-typescript2": "^0.34.1",
+    "typescript": "^5.0.2"
+  }
+}
