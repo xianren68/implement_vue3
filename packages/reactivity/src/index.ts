@@ -1,7 +1,3 @@
-import {b} from '@vue/shared'
-let p = 1
-let c = 1
-export {
-    p,
-    c,
-}
+// 响应式系统入口文件
+// 主要用于暴露一些方法出去，供其他文件使用
+export * from './reactive'

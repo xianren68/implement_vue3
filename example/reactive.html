@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 
+        总结
+        vue3响应式的核心是Proxy+Reflect
+        核心api有reactive,shallowReactive,readonly,shallowReadonly
+        可以分为浅层代理与只读代理
+        1. 我们通过柯里化函数，通过传入的参数（对象）来设置代理的不同，并且用weakMap制作容器来存储已经代理过的值
+        2. 设置getter时,我们依然使用柯里化函数，通过传入深浅与是否只读来完成每个api的不同设置
+        3. 对于setter,我们对只读的代理不做处理
+        vue3 getter中很重要的一点是懒代理，如果属性是一个引用类型，那么它只有在不是浅层代理，并且被访问的时候
+        才会对它进行递归代理
+
+     -->
+    <!-- 导入 -->
+    <script src="../packages/reactivity/dist/reactivity.global.js"></script>
+</head>
+<body>
+    <script>
+        let{reactive, readonly, shallowReactive, shallowReadonly} = reactivity
+        // 创建一个对象
+        const p = {
+            name :'xianren',
+            age: 12,
+            f:{
+                n :'xxx'
+            }
+        }
+        // let sr = shallowReactive(p)
+        // console.log(sr.f);
+        let rea = reactive(p)
+        console.log(rea.f)
+        let ro = readonly(p)
+        console.log(ro.name);
+    </script>
+</body>
+</html>

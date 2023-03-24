@@ -1,5 +1,2 @@
-let a = 2
-let b= a
-export {
-    a,b
-}
+// 通用方法的入口文件
+export * from './general'
