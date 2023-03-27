@@ -3,18 +3,18 @@
 // 2. 我们可以通过函数柯里化，通过传入参数的不同来完成不同的操作
 import { isObject } from "@vue/shared";
 import { reactiveHandlers,shallowReactiveHandlers,shallowReadonlyHandlers,readonlyHandlers } from "./baseHandlers";
-// 定义两个容器
-// 1. 用来装可以修改的
+// 定义四个容器，分别存储四种不同的响应式,如果用相同的容器，则会出现不同代理不能用在同一个对象上的现象
 const reactiveMap = new WeakMap()
-// 2. 用来装只读的
+const shallowReactiveMap = new WeakMap()
 const readonlyMap = new WeakMap()
+const shallowReadonlyMap = new WeakMap()
 // 深层代理
 export function reactive<T extends Object>(target:T){
     return createReactiveObject(target,false,reactiveHandlers,reactiveMap)
 }
 // 浅层代理
 export function shallowReactive<T extends Object>(target:T){
-    return createReactiveObject(target,false,shallowReactiveHandlers,reactiveMap)
+    return createReactiveObject(target,false,shallowReactiveHandlers,shallowReactiveMap)
 }
 // 只读
 export function readonly<T extends Object>(target:T){
@@ -22,7 +22,7 @@ export function readonly<T extends Object>(target:T){
 }
 // 浅层只读
 export function shallowReadonly<T extends Object>(target:T){
-    return createReactiveObject(target,true,shallowReadonlyHandlers,readonlyMap)
+    return createReactiveObject(target,true,shallowReadonlyHandlers,shallowReadonlyMap)
 }
 // 核心函数，用于处理传入的不同参数
 function createReactiveObject(target:object,isReadonly:boolean,baseHandlers: ProxyHandler<any>,proxyMap:WeakMap<object,any>){

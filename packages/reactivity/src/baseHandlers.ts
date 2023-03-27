@@ -4,6 +4,8 @@
 
 import { isObject } from "@vue/shared"
 import { reactive, readonly } from "./reactive"
+import {track} from './effect'
+import { TrackOpTypes } from "./oprtations"
 
 // 创建getter
 function createGetter(isReadonly=false,isShallow=false){
@@ -16,12 +18,12 @@ function createGetter(isReadonly=false,isShallow=false){
             return res
         }
         // 这里添加依赖
-        console.log("被获取了")
+        track(target,TrackOpTypes.GET,key)  
+        
         // 判断是不是浅层的
         if(isShallow) {
             return res
         }
-        console.log('hello',isShallow);
         
         // 判断key对应的值是否为对象
         // 是对象，递归处理
@@ -29,6 +31,7 @@ function createGetter(isReadonly=false,isShallow=false){
         if (isObject(res)){
             return isReadonly? readonly(res):reactive(res)
         }
+        return res
     }
 }
 // 创建setter
