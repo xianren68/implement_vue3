@@ -5,6 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <!-- 2.总结
+        大概完成依赖收集
+        依赖收集是在getter时完成的，我们通过effect()来包装要值发生改变时需要执行的方法
+        每个值可能在页面中会有多个地方使用到
+        所以在存储时我们需要通过容器存储起来
+        容器结构为 WeakMap(目标对象：Map(属性：Set(依赖函数列表)))
+        在setter中，我们触发依赖时，先要判断是添加还是修改
+    -->
 </head>
 <body>
     <script  type="module">
@@ -20,12 +28,8 @@
        effect(()=>{
             console.log("heihei");
         })
-       let age2 = state.age
-        // effect(()=>{
-        //     console.log(1000)
-        // },{
-        //     lazy:false
-        // })
+       state.name = "xxx"
+       state.sex = "male"
     </script>
 </body>
 </html>

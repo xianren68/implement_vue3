@@ -2,7 +2,7 @@
 // get操作分为 1.是否为只读的 2.是否是浅层的
 // 通过一个柯里化函数来实现
 
-import { isObject } from "@vue/shared"
+import { isObject,isArray,isIntergerKey, hasOwn } from "@vue/shared"
 import { reactive, readonly } from "./reactive"
 import {track} from './effect'
 import { TrackOpTypes } from "./oprtations"
@@ -36,9 +36,20 @@ function createGetter(isReadonly=false,isShallow=false){
 }
 // 创建setter
 function createSetter(isShallow=true){
-    return function(target:object,key:string|symbol|number,value:any,receiver:object){
-        const result = Reflect.set(target,key,value)
+    return function(target:any,key:string|symbol|number,value:any,receiver:object){
         // 触发更新
+        // 拿到旧值
+        let oldValue = target[key]
+        // 判断是数组还是对象，并且判断是添加还是修改
+        let isAdd = isArray(target) && isIntergerKey(key)?target.length < Number(key):
+        hasOwn(target,key)
+        // 触发更新
+        if (isAdd){
+            console.log("添加")
+        }else {
+            console.log("修改")  
+        }
+        const result = Reflect.set(target,key,value)
         return result
     }
 }
