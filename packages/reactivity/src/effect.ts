@@ -1,4 +1,8 @@
 // 副作用函数
+
+import { isArray,isIntergerKey } from "@vue/shared"
+import {TriggerOpTypes} from './oprtations'
+
 // 全局变量，用于保存副作用函数
 let activeEffect:any
 export function effect<T =any>(fn:()=>T,options:{lazy:boolean}={lazy:false}){ 
@@ -46,5 +50,56 @@ export function track(target:object,operate:string,key:string|symbol|number){
     if(!effectSet.has(activeEffect)){
         effectSet.add(activeEffect)
     }
-    console.log(targetMap);
+}
+// 触发更新的函数
+export function trigger(target:object,type:string,key:string|symbol|number,value:any){
+    
+    let depsMap = targetMap.get(target)
+    // 是响应式数据，但视图中没有依赖它的
+    if (!depsMap){
+        return 
+    }
+    // 用一个数组来存储待处理的函数
+    let deps:any[] = []
+    const add = function(set:Set<any>|undefined){
+        if(set === undefined){
+            return
+        }
+        set.forEach(v=>{
+            deps.push(v)
+        })
+    }
+    // 如果key是长度，并且目标对象是数组
+    // 这个分支用于处理直接修改数组长度的情况
+    if (key === 'length' && isArray(target)){
+        let newLength = Number(value)
+        depsMap.forEach((dep:any,key:any)=>{
+            // 直接修改长度，数组有些索引会直接受到影响，将它们的副作用函数也存储起来
+            if (key === "length" || key >= newLength){  
+                add(dep)
+            }
+        })
+    }else {
+        if (key!==undefined){
+            // 不用担心新增的属性，前面通过反射已经添加了
+            add(depsMap.get(key))
+        }
+        switch(type){
+            // 如果是添加值
+            case TriggerOpTypes.ADD:
+
+                // 判断是否是数组
+                if(isArray(target) && isIntergerKey(key)){
+                    // 数组长度增加，直接触发关于数组长度的副作用函数
+                    add(depsMap.get('length'))
+                }
+        }
+    }
+    
+    // 执行副作用函数
+    deps.forEach(effect=>{
+        effect()
+    })
+    
+
 }

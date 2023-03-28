@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 
+        3.trigger触发更新
+        先在setter中判断是添加操作还是修改操作，如果是添加，直接进入trigger，否则判断两次值是否相同，不相同trigger
+        进入触发更新的流程，如果是对象，则很简单，拿到对应属性的副作用函数执行即可
+        如果是数组，则需要判断一下我们修改的是不是数组的length属性，如果是，则遍历执行数组内部元素
+        将其中大于等于给定长度的值全部触发其对应方法，因为这些值会被间接影响，变成undefined，
+        然后可以判断数组是否是添加操作，如果是，则会触发length对应的副作用方法
+
+
+     -->
+</head>
+<body>
+    <script type="module">
+        import {reactive,effect} from '../packages/reactivity/dist/reactivity.esm-bundler.js ';
+        const obj = reactive([1,2,3,4])
+        const ojb = reactive({name:'xianren'})
+        effect(()=>{
+            console.log(ojb.name)})
+        ojb.name = 'xxx'
+        ojb.sex = 'male'
+        effect(()=>{
+            console.log(obj.length)
+        })
+        obj.length = 12
+        obj[100] = 10
+    </script>
+</body>
+</html>

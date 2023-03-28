@@ -2,10 +2,10 @@
 // get操作分为 1.是否为只读的 2.是否是浅层的
 // 通过一个柯里化函数来实现
 
-import { isObject,isArray,isIntergerKey, hasOwn } from "@vue/shared"
+import { isObject,isArray,isIntergerKey, hasOwn,isChange} from "@vue/shared"
 import { reactive, readonly } from "./reactive"
-import {track} from './effect'
-import { TrackOpTypes } from "./oprtations"
+import {track,trigger} from './effect'
+import { TrackOpTypes,TriggerOpTypes } from "./oprtations"
 
 // 创建getter
 function createGetter(isReadonly=false,isShallow=false){
@@ -42,14 +42,19 @@ function createSetter(isShallow=true){
         let oldValue = target[key]
         // 判断是数组还是对象，并且判断是添加还是修改
         let isAdd = isArray(target) && isIntergerKey(key)?target.length < Number(key):
-        hasOwn(target,key)
+        !hasOwn(target,key)
+        const result = Reflect.set(target,key,value)
         // 触发更新
         if (isAdd){
-            console.log("添加")
+            // 添加，直接触发
+            trigger(target,TriggerOpTypes.ADD,key,value)
         }else {
-            console.log("修改")  
+            // 修改，判断两次值是否发生变化
+            if(isChange(oldValue,value)){
+                trigger(target,TriggerOpTypes.SET,key,value)
+            }
+
         }
-        const result = Reflect.set(target,key,value)
         return result
     }
 }
