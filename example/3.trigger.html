@@ -13,23 +13,25 @@
         将其中大于等于给定长度的值全部触发其对应方法，因为这些值会被间接影响，变成undefined，
         然后可以判断数组是否是添加操作，如果是，则会触发length对应的副作用方法
 
-
+        这里还有一个问题，副作用函数会被保存起来，有属性被访问时，如果没有指定的副作用函数，依然会使用它作为副作用函数
      -->
 </head>
 <body>
     <script type="module">
         import {reactive,effect} from '../packages/reactivity/dist/reactivity.esm-bundler.js ';
         const obj = reactive([1,2,3,4])
-        const ojb = reactive({name:'xianren'})
+        const ojb = reactive({name:'xianren',age:21})
         effect(()=>{
             console.log(ojb.name)})
+        let x = obj.age
         ojb.name = 'xxx'
-        ojb.sex = 'male'
-        effect(()=>{
-            console.log(obj.length)
-        })
-        obj.length = 12
-        obj[100] = 10
+        obj.age = 22
+        // ojb.sex = 'male'
+        // effect(()=>{
+        //     console.log(obj.length)
+        // })
+        // obj.length = 12
+        // obj[100] = 10
     </script>
 </body>
 </html>

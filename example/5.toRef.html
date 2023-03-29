@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 
+        5.toRef:
+        toRef可以看作是对响应式对象的解构，它的getter和setter中没有收集和触发依赖的地方
+        因为会自动去找到Proxy对象的捕获器中来操作
+        toRefs:
+        用于将整个响应式对象中所有属性都解构成一个新对象,在它内部调用了refs
+        这两个方法是用来将响应式对象的属性解构出来，更好的调用它们,因为直接对响应式对象解构得到的属性是非响应式的
+     -->
+</head>
+<body>
+    <div id="app"></div>
+    <script type="module">
+        import {ref,effect,reactive,toRef,toRefs} from '../packages/reactivity/dist/reactivity.esm-bundler.js'
+        let b = reactive({name:'xianren'})
+        let d = reactive({name:"xxx",age:21,sex:'male'})
+        let g = toRefs(d)
+        let c = {name:'xianren'}
+        let v = toRef(c,'name')
+        // 创建副作用函数
+        effect(()=>{
+            app.innerText = v.value
+        })
+        console.log(v)
+        console.log(g)
+        // 修改值
+        setTimeout(()=>{
+            v.value = "xiaoli"
+        },1000)
+    </script>
+</body>
+</html>
