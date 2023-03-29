@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 
+        4.ref
+        ref本质是通过访问属性来完成的，它会将一个普通的值转换为一个Ref对象，在对象的getter和setter属性中
+        收集依赖与触发更新
+     -->
+</head>
+<body>
+    <div id="app"></div>
+    <script type="module">
+        import {ref,effect} from '../packages/reactivity/dist/reactivity.esm-bundler.js'
+        let v = ref(0)
+        // 创建副作用函数
+        effect(()=>{
+            app.innerText = v.value
+        })
+        // 修改值
+        setTimeout(()=>{
+            v.value = 1
+        },1000)
+
+    </script>
+    
+</body>
+</html>
