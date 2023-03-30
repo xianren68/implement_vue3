@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 
+        6.computed
+        通常依赖已有的属性来返回另一个属性
+        接收一个函数或对象作为配置项
+        特点：
+        1. 第一次不执行
+        计算属性里的命令不会立即执行
+        其实computed属性和ref等类似，会返回一个拥有getter和setter的对象，通过value来访问或设置值，它接收一个副作用函数(类似effect，如果是对象类型的参数则是get()方法)，但不会立即执行它
+        只有再使用时才执行，effect配置设置lazy即可
+        通常，我们只用函数参数即可，对象参数则可以让我们能够反向的操作依赖的值
+        2. 有缓存机制
+        如果计算属性依赖的值没有发生改变，那计算属性会直接拿到value的值
+        这里使用了一个变量_dirty来作为参照
+        如果为true，则发生改变，会执行函数来获取值
+        如果为false，则不会发生改变，会直接获取值
+        每次执行完函数后，都会将_dirty设为false，
+        因为computed是依赖其他响应式数据的，所以它执行的时候会获取它依赖属性的值
+        变相的让它们多了一个副作用函数，等到这些值修改时，会通知副作用函数，并将_dirty设为true
+        这时计算属性就知道依赖的值改变了，会再次执行函数获取
+     -->
+</head>
+<body>
+    <script type="module">
+        import {computed,reactive} from '../packages/reactivity/dist/reactivity.esm-bundler.js'
+        const a = reactive({name:'xianren'})
+        let age = computed(()=> {
+            console.log("缓存机制")
+            return a.name + "xx"})
+        console.log(age.value)
+        console.log(age.value)
+        a.name = "xxx"
+        console.log(age.value)
+        let n = computed({
+            get(){
+                return a.name + 3
+            },
+            set(v){
+
+                a.name = v-3
+            }
+        })
+        n.value = 33
+        console.log(a.name)
+
+        
+    </script>
+</body>
+</html>

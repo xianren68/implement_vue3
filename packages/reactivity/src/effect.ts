@@ -5,7 +5,7 @@ import {TriggerOpTypes} from './oprtations'
 
 // 全局变量，用于保存副作用函数
 let activeEffect:any
-export function effect<T =any>(fn:()=>T,options:{lazy:boolean}={lazy:false}){ 
+export function effect<T =any>(fn:()=>T,options:{lazy:boolean,sch?:any}={lazy:false}){ 
     const effect = createReactEffect(fn,options)
     // 如果为false,立即执行一次
     if (!options.lazy){
@@ -17,7 +17,7 @@ let uid = 0
 function createReactEffect(fn:()=>any,options:object){
     const effect = function reactiveEffect(){ 
         activeEffect = effect
-        fn()
+        return fn()
     }
     effect.id = uid++ // 唯一标识
     effect._isEffect = true // 是否为响应式
@@ -98,7 +98,14 @@ export function trigger(target:object,type:string,key:string|symbol|number,value
     
     // 执行副作用函数
     deps.forEach(effect=>{
-        effect()
+        // 如果存在sch方法，则是计算属性触发的
+        if (effect.options.sch){
+            // 执行，让计算属性可以再次执行
+            effect.options.sch()
+        }else {
+            effect()
+        }
+        
     })
     
 
