@@ -18,3 +18,4 @@ export const hasOwn = (target:object,key:string|number|symbol):boolean=>{
 export const isIntergerKey = (val:unknown)=> parseInt(val as string) + "" === val
 // 判断值是否发生改变
 export const isChange = (val:unknown,newValue:unknown)=>val !== newValue
+export const extend = Object.assign
