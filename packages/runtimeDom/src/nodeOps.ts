@@ -18,7 +18,7 @@ export const nodeOps = {
         parent.insertBefore(child,achor||null)
     },
     // 选择
-    querySeleter:(select:string)=>document.querySelector(select)
+    querySeletor:(select:string)=>document.querySelector(select)
     ,
     // 设置节点文本
     setElementText:(el:Element,text:string)=>{
