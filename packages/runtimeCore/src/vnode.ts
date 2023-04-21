@@ -1,6 +1,6 @@
 // 创建虚拟dom
 import {isString,isObject,ShapeFlags,isArray} from '@vue/shared'
-export const createVnode = (type:any,props:any,children=null)=>{
+export const createVnode = (type:any,props:any,children:any=null)=>{
     let shapeFlag = isString(type)?ShapeFlags.ELEMENT: // 元素
     isObject(type)?ShapeFlags.STATEFUL_COMPONENT:0 // 组件
     const vnode = {
@@ -11,6 +11,7 @@ export const createVnode = (type:any,props:any,children=null)=>{
         key:props&&props.key, // 唯一标识用于diff算法
         el:null, // 对应的真实元素
         shapeFlag, // 标志组件或元素
+        component:{} // 组件实例
     }
     // 判断子节点类型
     normalize(vnode,children)
@@ -24,4 +25,10 @@ function normalize(vnode:any,children:any){
         type = ShapeFlags.TEXT_CHILDREN
     }
     vnode.shapeFlag = vnode.shapeFlag | type
+}
+export function isVnode(vnode:any){
+    if(vnode._v_isVnode){
+        return true
+    }
+    return false
 }

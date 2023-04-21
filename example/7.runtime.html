@@ -6,11 +6,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="../packages/runtimeDom/dist/runtimeDom.global.js"></script>
+    <!--  组件及元素渲染
+        1. 抽离出dom操作 -> 为了跨平台考虑，将dom操作抽离出来，方便随时更换平台，并对属性以及事件进行处理
+            - 对props属性的操作，判断是style，class,还是自定义属性
+            - 事件的处理，通过一个缓存来储存dom上绑定的事件，妙处在于是通过.value将真正的事件函数包装起来，所以在修改时只需要修改value的值即可
+        2. 创建虚拟dom
+            - 创建虚拟dom时通过位运算来标识各种状态
+        3. 渲染虚拟dom
+            2.1 虚拟dom为组件
+                2.1.1 判断组件是更新/挂载
+                    - 挂载. 
+                        1.创建组件实例
+                        2.将组件中的数据添加，如props,并且处理setup方法，以及render方法
+                            - 为了更方便的使用，在将属性传入render时进行了代理操作
+                        3.通过effect包装render方法，以完成响应式
+            2.2 虚拟dom为元素
+
+
+
+     -->
 </head>
+
 <body>
+    <div id="app"></div>
     <script>
-        let app = runtimeDom.createApp('div',{name:'xianren'})
-        app.mount("#main")
+        let App = {setup:function(props,context){
+            console.log(props,context)
+        },render(proxy){
+            console.log(this,proxy)
+        }}
+        let app = runtimeDom.createApp(App,{name:'xianren',age:21})
+        app.mount("#app")
     </script>
 </body>
 </html>

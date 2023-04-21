@@ -11,7 +11,7 @@ export function ApiCreateApp(render:any){
                 let vnode = createVnode(rootComponent,rootProps)
                 // 2. 渲染节点
                 render(vnode,container)
-                this._container = container
+                // this._container = container
             }
         }
         return app
