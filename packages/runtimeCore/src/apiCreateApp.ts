@@ -1,4 +1,5 @@
 import { createVnode } from "./vnode"
+import { rendererOptions } from "@vue/runtimeDom"
 
 export function ApiCreateApp(render:any){
     return function(rootComponent:any,rootProps:any){
@@ -10,8 +11,8 @@ export function ApiCreateApp(render:any){
                 // 1. 创建虚拟dom
                 let vnode = createVnode(rootComponent,rootProps)
                 // 2. 渲染节点
-                render(vnode,container)
-                // this._container = container
+                let containe = rendererOptions.querySelector(container)
+                render(vnode,containe)
             }
         }
         return app

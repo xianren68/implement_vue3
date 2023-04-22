@@ -4,6 +4,7 @@ import { nodeOps } from "./nodeOps"
 import { patchProp } from "./patchProp"
 import { createRender } from "@vue/runtimeCore"
 
+
 // 合并
 const rendererOptions = extend({patchProp},nodeOps)
 
@@ -12,11 +13,11 @@ export {
 }
 // 创建组件
 export const createApp = (rootComponent:string|object,rootProps:any)=>{
-    let app = createRender().createApp(rootComponent,rootProps)
+    let app = createRender(rendererOptions).createApp(rootComponent,rootProps)
     let {mount} = app
     app.mount = function(container:string){
         // 去除要挂载元素的一些子元素
-        let element = nodeOps.querySeletor(container)
+        let element = nodeOps.querySelector(container)
         if(!element){
             console.warn("需要挂载的元素不存在")
             return
@@ -28,3 +29,4 @@ export const createApp = (rootComponent:string|object,rootProps:any)=>{
     }
     return app
 }
+export * from '@vue/runtimeCore'

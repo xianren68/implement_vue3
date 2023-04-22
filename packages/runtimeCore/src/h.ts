@@ -22,6 +22,6 @@ export function h(type:string,props:object|string,children:any){
         }else if(l == 3 && isVnode(children)){ // 最后一个节点是虚拟dom
             children = [children]
         }
-        return createVnode(type,null,children)
+        return createVnode(type,props,children)
     }
 }
