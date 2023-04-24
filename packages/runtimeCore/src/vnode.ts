@@ -32,3 +32,13 @@ export function isVnode(vnode:any){
     }
     return false
 }
+
+// 文本唯一标识
+export const TEXT = Symbol('text')
+// 子节点转化为虚拟dom
+export function cVnode(children:any){
+    // 已经是虚拟dom
+    if(isObject(children)) return children
+    // 文本节点
+    return createVnode(TEXT,null,String(children))
+}

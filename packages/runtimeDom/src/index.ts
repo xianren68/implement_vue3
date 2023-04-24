@@ -30,3 +30,4 @@ export const createApp = (rootComponent:string|object,rootProps:any)=>{
     return app
 }
 export * from '@vue/runtimeCore'
+export * from '@vue/reactivity'
