@@ -15,6 +15,7 @@ export const nodeOps = {
     // 添加
     insert:(child:Element,parent:Element,achor:Element)=>{
         // 如果有参照元素，直接放到参照元素之前，若没有直接append
+        
         parent.insertBefore(child,achor||null)
     },
     // 选择

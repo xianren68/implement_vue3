@@ -42,6 +42,22 @@
             更新的逻辑通过上面渲染时的effect函数来完成，当元素依赖的数据发生变化，就会导致副作用函数重新执行
             5.1 元素发生变化
                 直接删除旧元素，挂载新元素
+            5.2 元素未发生变化
+                对比属性与子节点，进行更新
+                对比子节点
+                    1. 旧的不存在，只存在新的
+                        遍历挂载
+                    2. 旧的存在，新的不存在
+                        卸载旧的
+                    3. 新节点为文本节点
+                        直接设置文本内容
+                    4. 新旧都为数组子节点，diff算法对比
+                        1. 有序
+                            1. 从头遍历到两个值不同时停止
+                            2. 从尾部开始遍历到不同时停止
+                            3. 添加多出的节点
+                        2. 无
+
 
 
 
@@ -69,16 +85,37 @@
 
                 return () => {
                     if (state.name=='闲人'){
-                        return h('div', { style: { backgroundColor: "red", height: '100px' } },
-                        [h('p', { style: { backgroundColor: "blue", height: '20px' }, onclick: fn }, state.name),
-                            "xianren",
+                        return h('div', { style: { backgroundColor: "red", height: '100px' } }
+                        // ,[h('p', { style: { backgroundColor: "blue", height: '20px' }, onclick: fn }, state.name),
+                        //     "xianren",
+                        // ]
+                        ,
+                        [
+                            
+                            h('div',{key:'A'},'A'),
+                            h('div',{key:'B'},'B'),
+                            h('div',{key:'C'},'C'),
+                            
+                            
                         ]
+                        
                     )
                     }else {
-                        return h('p', { style: { backgroundColor: "green", height: '100px' } },
-                        [h('div', { style: { backgroundColor: "blue", height: '20px' }, onclick: fn }, state.name),
-                            "xiaoli",
+                        return h('div', { style: { backgroundColor: "green", height: '100px' } }
+                        // ,'xianren'
+                        // ,[h('div', { style: { backgroundColor: "blue", height: '20px' }, onclick: fn }, state.name),
+                        //     "xiaoli",
+                        // ]
+                        ,
+                        
+                        [
+                            h('div',{key:'A'},'A'),
+                            h('div',{key:'B'},'B'),
+                            h('div',{key:'D'},'D'),
+                            h('div',{key:'E'},'E'),
+                            h('div',{key:'C'},'C'),
                         ]
+                        
                     )
                     }
 
