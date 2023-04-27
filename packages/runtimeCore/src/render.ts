@@ -215,6 +215,9 @@ export function createRender(options:any) { // 实现渲染
                     patch(oldValue,newV[newIndex],el)
                 }
             }
+            // 获取最长子序列
+            const longest = getRequence(ArrOrder)
+            let len = longest.length
             // 根据数组重新排列/添加节点
             for(let j = disOrderLen-1;j>=0;j--){
                 // 在新的子节点列表中的位置
@@ -226,13 +229,68 @@ export function createRender(options:any) { // 实现渲染
                 if(ArrOrder[j] == 0){ // 新节点
                     patch(null,child,el,anchor)
                 }else{ // 旧的
-                    hostInsert(child.el,el,anchor)
+                    if(j != longest[len]){
+                        hostInsert(child.el,el,anchor)
+                    }else {
+                        len--
+                    }
+
                 }
             }
             
 
         }
          
+    }
+    // 获取最长连续子序列
+    const getRequence = (arr:Array<any>)=>{
+        // 记录数组长度
+        let length = arr.length
+        // 最长子序列数组，装的是原数组的索引
+        const result = [0]
+        // p数组，保存前驱索引
+        let p = arr.slice()
+        // result的最后一个位置的值
+        let resultLast
+        for(let i=0;i<length;i++){
+            const arrI = arr[i]
+            // 0代表是新的节点
+            if(arrI != 0){
+                // 获取到最后一个元素
+                resultLast = result[result.length-1]
+                if(arrI>resultLast){ // 大于，直接添加
+                    result.push(i)
+                    p[i] = resultLast
+                    continue
+                }
+                // 二分查找,找到最接近的位置
+                let start,end
+                start = 0
+                end = result.length-1
+                while(start < end){
+                    let middle:any = ((start+end)/1) | 0// 向下取整
+                    if(arr[result[middle]]>arrI){ // 继续缩小范围
+                        end = middle
+                    }else {
+                        start = middle + 1
+                    }
+
+                }
+                if(arr[result[end]]>arrI){ // 替换
+                    result[end] = i
+                    p[i] = result[end-1]
+                }
+            }
+            
+            
+        }
+        let i = result.length
+        let last = i-1
+        while(i-->0){
+            result[i] = last
+            last = p[last]
+        }
+        return result
     }
 
 // 文本/子节点相关。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。
