@@ -169,7 +169,6 @@ export function createRender(options:any) { // 实现渲染
             let c2 = newV[l2]
             if (isSameVnode(c1,c2)){ // 相同元素
                 patch(c1,c2,el) // 对比内部是否发生变化
-                console.log(c1,c2);
                 
             }else {
                 break
@@ -188,10 +187,50 @@ export function createRender(options:any) { // 实现渲染
                 patch(null,newV[i++],el,achor)
             }
         // 2. 旧的比新的多
-        }else if(i<l1){
+        }else if(i>l2){
             while(i<=l1){
                 unmount(old[i++])
             }
+        }else { // 有乱序部分
+            // 建立一个map
+            let newMap = new Map()
+            // 一个数组，用来存储乱序的部分
+            const disOrderLen = l2 - i + 1
+            const ArrOrder = new Array(disOrderLen).fill(0)
+            // 遍历将乱序的放进去
+            for(let j = i;j<=l2;j++){
+                newMap.set(newV[j].key,j)
+            }
+            // 对比旧的乱序
+            for(let j = i;j<=l1;j++){
+                // 判断是否存在于hash表中
+                let oldValue = old[j]
+                let newIndex = newMap.get(oldValue.key)
+                if (!newIndex) { // 不存在，卸载
+                    unmount(oldValue)
+                }else{ // 存在，对比更新
+                    // 存入数组中
+                    // 按新索引填入老的索引
+                    ArrOrder[newIndex-i] = j+1
+                    patch(oldValue,newV[newIndex],el)
+                }
+            }
+            // 根据数组重新排列/添加节点
+            for(let j = disOrderLen-1;j>=0;j--){
+                // 在新的子节点列表中的位置
+                let currentIndex = j + i
+                let child = newV[currentIndex]
+                // 参照节点
+                let anchor = currentIndex < newV.length-1?newV[currentIndex+1].el:null
+                // 判断是新的还是旧的
+                if(ArrOrder[j] == 0){ // 新节点
+                    patch(null,child,el,anchor)
+                }else{ // 旧的
+                    hostInsert(child.el,el,anchor)
+                }
+            }
+            
+
         }
          
     }
