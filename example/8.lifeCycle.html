@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../packages/runtimeDom/dist/runtimeDom.global.js"></script>
+    <!-- 
+        生命周期
+            vue3生命周期是独立的函数，可以在需要时引入
+            通过一个全局的组件实例来让实例与生命周期函数产生联系，有点类似于响应式系统的副作用函数，不过组件实例会立刻置空
+            流程：
+                1. 在执行setup()函数之前，将全局组件实例设为当前实例
+                2. 在setup中会调用生命周期函数，将生命周期函数添加到组件实例上
+                3. setup执行完后，将全局实例置空
+                4. 挂载前后，对应render函数执行前后，令对应的生命周期函数在此刻执行
+                5. 数据发生变化，重新执行渲染的时候，执行更新前后的生命周期函数
+     -->
+</head>
+<body>
+    <div id="app"></div>
+    <script>
+        let {h,reactive,onBeforeMount,onMounted,onBeforeUpdate,onUpdated,createApp} = runtimeDom
+        let App = {
+            setup(){
+                const user = reactive({
+                    name:'xianren'
+                })
+                setTimeout(()=>{
+                    user.name = 'xiaoli'
+                },5000)
+                onBeforeMount(()=>{
+                    console.log('挂载前');
+                })
+                onMounted(()=>{
+                    console.log('挂载后');
+                })
+                onBeforeUpdate(()=>{
+                    console.log('更新前');
+                })
+                onBeforeUpdate(()=>{
+                    console.log('更新前1');
+                })
+                onUpdated(()=>{
+                    console.log('更新后');
+                })
+                return {
+                    user
+                }
+            },
+            render(proxy){
+                return h('div',{style:{backgroundColor:'#008c8c'}},proxy.user.name)
+            }
+        }
+        let app = createApp(App,{ name: 'xianren', age: 21 })
+        app.mount('#app')
+    </script>
+</body>
+</html>

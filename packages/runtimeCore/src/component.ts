@@ -29,14 +29,28 @@ export function setupComponent(instance:any){
         setupStateComponent(instance)
     }
 }
+// 获取当前实例
+export function getCurrentInstance(){
+    return currentInstance
+}
+// 设置当前实例
+export function setCurrentInstance(target:any){
+    currentInstance = target
+}
+// 全局组件实例
+export let currentInstance :any
 function setupStateComponent(instance:any){
     instance.proxy = new Proxy(instance.ctx,componentPublicInstance as any)
     let component = instance.type
     let {setup} = component
     if(setup){
+        // 给全局组件实例赋值
+        currentInstance = instance
         let context = createContext(instance)
         // 执行setup方法,并获得其返回值
         let setupRequest = setup(instance.props,context)
+        // setup执行后置空
+        currentInstance = null
         handlerSetupRequest(instance,setupRequest)
     }else { // 没有setup
         finishComponentSetup(instance)

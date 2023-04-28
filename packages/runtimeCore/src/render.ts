@@ -3,6 +3,7 @@ import { ShapeFlags} from "@vue/shared"
 import { createComponentInstance, setupComponent } from "./component"
 import { effect } from "@vue/reactivity"
 import { TEXT, cVnode } from "./vnode"
+import { invokArrayFns } from "./apiLifeCycle"
 
 export function createRender(options:any) { // 实现渲染
     const {
@@ -17,28 +18,47 @@ export function createRender(options:any) { // 实现渲染
       } = options
   
 // 组件相关 。。。。。。。。。。。。。
-
+      
     // 给render函数添加effect,以实现响应式
     function setupRenderEffect(instance: any,container:any) {
         
         effect(() => {
             // 第一次挂载
             if (!instance.isMounted) {
+                // 获得生命周期函数
+                let {bm,m} = instance
                 // 调用render方法
                 let proxy = instance.proxy
+                // 渲染前,执行beforeMount
+                if(bm){
+                    invokArrayFns(bm)
+                }
                 // 改变this指向
                 let subTree = instance.subTree = instance.render.call(proxy, proxy)
                 patch(null,subTree,container)
+                // 渲染完成，执行Mounted
+                if(m){
+                    invokArrayFns(m)
+                }
                 instance.isMounted = true // 修改状态
                 
             }else { // 更新
+                let {bu,u} = instance
                 let proxy = instance.proxy
                 // 旧的dom树
                 let preTree = instance.subTree
+                // 更新前，执行beforeUpdate
+                if(bu){
+                    invokArrayFns(bu)
+                }
                 // 新的虚拟dom树
                 let nextTree = instance.subTree = instance.render.call(proxy,proxy)
                 // 对比
                 patch(preTree,nextTree,container)
+                // 更新完成
+                if(u){
+                    invokArrayFns(u)
+                }
                 
             }
         })
